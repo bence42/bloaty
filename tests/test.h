@@ -132,7 +132,7 @@ class BloatyTest : public ::testing::Test {
         ASSERT_EQ(cols, expected_headers);
         first = false;
       } else {
-        // Final six columns should parse as integer.
+        // Final two columns should parse as integer.
         int out;
         ASSERT_EQ(output_->source_names().size() + 6, cols.size());
         ASSERT_TRUE(absl::SimpleAtoi(cols[cols.size() - 1], &out));
