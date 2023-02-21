@@ -361,6 +361,8 @@ struct RollupRow {
   // The current size of this row (this is not the same as `size` in the case
   // of a diff -- `size` is the delta).
   DomainSizes new_size = {0, 0};
+
+  DomainSizes capacity = {0, 0};
   
   std::vector<RollupRow> sorted_children;
 
