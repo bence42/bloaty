@@ -431,13 +431,21 @@ void Rollup::CreateRows(RollupRow* row, const Rollup* base,
       child_row.size.vm = vm_total;
       child_row.size.file = file_total;
 
-      // Preserve the old size for this label in the RollupRow output.
+      // Preserve the old and new sizes for this label in the RollupRow output.
       // If there is a diff base, the old sizes come from the size of the label
-      // in that base.  Otherwise, the old size stays 0.
+      // in that base.  Otherwise, the old size is the same as the new (current)
+      // size.
       if (base_child) {
         child_row.old_size.vm = base_child->vm_total_;
         child_row.old_size.file = base_child->file_total_;
-       }
+        child_row.new_size.vm = value.second->vm_total_;
+        child_row.new_size.file = value.second->file_total_;
+      } else {
+        child_row.old_size.vm = child_row.size.vm;
+        child_row.old_size.file = child_row.size.file;
+        child_row.new_size.vm = child_row.size.vm;
+        child_row.new_size.file = child_row.size.file;
+      }
     }
   }
 
@@ -839,19 +847,10 @@ void RollupOutput::PrintRowToCSV(const RollupRow& row,
 
   parent_labels.push_back(std::to_string(row.size.vm));
   parent_labels.push_back(std::to_string(row.size.file));
-
-  // If in diff where both old size are 0, get new size by adding diff size to old size.
   parent_labels.push_back(std::to_string(row.old_size.vm));	
-  parent_labels.push_back(std::to_string(row.old_size.file));
-  if (row.old_size.vm != 0 && row.old_size.file != 0){
-    parent_labels.push_back(std::to_string(row.old_size.vm + (row.size.vm)));	
-    parent_labels.push_back(std::to_string(row.old_size.file + (row.size.file)));	
-  } else {
-    parent_labels.push_back(std::to_string(0));	
-    parent_labels.push_back(std::to_string(0));	
-  }
-  
-  
+  parent_labels.push_back(std::to_string(row.old_size.file));	
+  parent_labels.push_back(std::to_string(row.new_size.vm));	
+  parent_labels.push_back(std::to_string(row.new_size.file));
 
   std::string sep = tabs ? "\t" : ",";
   *out << absl::StrJoin(parent_labels, sep) << "\n";

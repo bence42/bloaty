@@ -356,8 +356,11 @@ struct RollupRow {
   double vmpercent;
   double filepercent;
 
-  // The size of the base in a diff mode. Otherwise stay 0.
+  // The size of this row in a diff base.  Same as `size` for non-diff.
   DomainSizes old_size = {0, 0};
+  // The current size of this row (this is not the same as `size` in the case
+  // of a diff -- `size` is the delta).
+  DomainSizes new_size = {0, 0};
   
   std::vector<RollupRow> sorted_children;
 
