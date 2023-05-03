@@ -1269,6 +1269,14 @@ class ElfObjectFile : public ObjectFile {
       : ObjectFile(std::move(file)) {}
 
   std::string GetBuildId() const override {
+    // GHS does not provide a build id in Note sections,
+    // but .ghs.uvfd.rout  and .ghs.uvfd.vtbl is a Note section
+    // that does not conform to bloatys parser.
+    // Skip this feature.
+
+    // No build id section found.
+    return std::string();
+
     if (IsObjectFile(file_data().data())) {
       // Object files don't have a build ID.
       return std::string();
